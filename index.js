@@ -23,6 +23,12 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
+        const menuCollection = client.db('bistroDB').collection('menu');
+
+        app.get('/menu', async(req, res) => {
+            const result = await menuCollection.find().toArray();
+            res.send(result);
+        })
 
         await client.db("admin").command({ ping: 1 });
         console.log("You successfully connected to MongoDB!");
