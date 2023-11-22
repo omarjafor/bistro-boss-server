@@ -38,14 +38,14 @@ async function run() {
 
         // middleware 
         const verifyToken = (req, res, next) => {
-            console.log('inside verify token', req.headers.authorization);
+            // console.log('inside verify token', req.headers.authorization);
             if (!req.headers.authorization) {
                 return res.status(401).send({ message: 'unauthorized access' });
             }
             const token = req.headers.authorization.split(' ')[1];
             jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
                 if (err) {
-                    return res.status(403).send({ message: 'forbidden access' })
+                    return res.status(401).send({ message: 'unauthorized access' });
                 }
                 req.decoded = decoded;
                 next();
@@ -88,7 +88,7 @@ async function run() {
             const query = { email: user.email }
             const existingUser = await userCollection.findOne(query);
             if (existingUser) {
-                res.send({ message: 'user already exists', insertedId: null })
+                return res.send({ message: 'user already exists', insertedId: null })
             }
             const result = await userCollection.insertOne(user);
             res.send(result);
